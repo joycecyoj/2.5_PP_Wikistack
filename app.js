@@ -3,53 +3,31 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 // const db = require('./models').db
-const { Page, User, db } = require('./models');   // ?
-const layout = require('./views/layout');
-const wikiRouter = require('./routes/wiki');
-const userRouter = require('./routes/user');
-// const models = require('./models');
-
-// const postRoutes = require("./routes/post");
+const path = require('path');
+const { Page, User, db } = require('./models');   // deconstructed, can call directly
 
 const app = express();
 
 app.use(morgan('dev'));  // logger
-app.use(express.static(__dirname + "/public"));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static(__dirname + "/public")); // serve static files
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use('/wiki', wikiRouter);
 
-app.get('/', (req, res, next) => {
+
+
+const layout = require('./views/layout');
+
+app.get('/', (req, res) => {
   res.redirect('/wiki');
 })
 
 
-// app.use('/posts', postRoutes); // check: does request start with /posts, if so redirects to Router
-//
-
-// app.use('/', (req, res, next) => {
-//   res.redirect("/posts");
-// })
+const wikiRouter = require('./routes/wiki');
+const userRouter = require('./routes/user');
 
 
-const PORT = 3000;
-
-const init = async () => {
-// console.log('this is the database', db)
-  await Page.sync()
-  await User.sync()
-
-  app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}!`);
-  });
-}
-
-init();
+app.use('/wiki', wikiRouter);
+app.use('/users', userRouter);
 
 
-// models.db.sync({force: true}) // ?
-
-db.authenticate().
-then(() => {
-  console.log('connected to the database');
-})
+module.exports = app;
