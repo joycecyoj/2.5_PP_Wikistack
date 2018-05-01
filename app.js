@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 const layout = require('./views/layout');
 
 app.get('/', (req, res) => {
-  res.redirect('/wiki');
+  res.redirect(layout('hi'));
 })
 
 

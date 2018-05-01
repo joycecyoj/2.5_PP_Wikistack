@@ -33,7 +33,7 @@ const Page = db.define('page', {
   }
 });
 
-Page.beforeValidate((page) => {
+Page.beforeValidate((page) => {     // as in before create new row in page table???????? why before validate, not beforeCreate
   if(!page.slug) {
     page.slug = generateSlug(page.title);
   }
